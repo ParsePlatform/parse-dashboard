@@ -204,7 +204,8 @@ export default class BrowserCell extends Component {
 
   render() {
     let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow } = this.props;
-    let content = value;
+    let content = value,
+        contentArray = []
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
@@ -246,7 +247,55 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = dateStringUTC(value);
     } else if (type === 'Boolean') {
       this.copyableValue = content = value ? 'True' : 'False';
-    } else if (type === 'Object' || type === 'Bytes' || type === 'Array') {
+    } else if (type === 'Array') {
+      this.copyableValue = '';
+      contentArray.push('[');
+      for (var i=0;i<value.length;i++) {
+        let val = value[i];
+        if (val === null) {
+          this.copyableValue += content = '(undefined)';
+          classes.push(styles.empty);
+        } if (val === '') {
+          contentArray.push(<span>&nbsp;</span>);
+          classes.push(styles.empty);
+        } else if (val && val.__type === 'Pointer') {
+          const object = new Parse.Object(val.className);
+          object.id = val.objectId;
+          value[i] = object;
+          val = object;
+          contentArray.push(onPointerClick ? (
+            <a href='javascript:;' onClick={onPointerClick.bind(undefined, val)}>
+              <Pill value={val.id} />
+            </a>
+          ) : (
+              val.id
+            ))
+          this.copyableValue += val.id;
+        } else if (val && val.__type === 'Date' || new Date(val)) {
+          if (typeof val === 'object' && val.__type) {
+            value[i] = new Date(val.iso);
+            val = value[i];
+          } else if (typeof val === 'string' && new Date(val)) {
+            value[i] = new Date(val);
+            val = value[i];
+          }
+          this.copyableValue +=  dateStringUTC(val);
+        } else if (val && val.__type === 'File') {
+          const fileName = val._url ? getFileName(val) : 'Uploading\u2026';
+          contentArray.push(<Pill value={fileName} />);
+          this.copyableValue += fileName;
+        }  else if (type === 'Boolean') {
+          this.copyableValue += val;
+        } else {
+          contentArray.push(JSON.stringify(val));
+          this.copyableValue += JSON.stringify(val);
+        }
+        if (i+1 != value.length) {
+          contentArray.push(',');
+        }
+      }
+      contentArray.push(']');
+    } else if (type === 'Object' || type === 'Bytes') {
       this.copyableValue = content = JSON.stringify(value);
     } else if (type === 'File') {
       const fileName = value.url() ? getFileName(value) : 'Uploading\u2026';
@@ -287,7 +336,9 @@ export default class BrowserCell extends Component {
         );
       this.copyableValue = undefined;
     }
-
+    if (contentArray.length == 0) {
+      contentArray = [content];
+    }
     if (current) {
       classes.push(styles.current);
     }
@@ -319,7 +370,7 @@ export default class BrowserCell extends Component {
         }}
         onContextMenu={this.onContextMenu.bind(this)}
       >
-        {content}
+        {contentArray.map((val,index) => <div style={{ display: 'inline-block'}} key={index + val}> {val} </div>)} 
       </span>
     );
   }
