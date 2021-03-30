@@ -15,8 +15,10 @@ import Separator            from 'components/BrowserMenu/Separator.react';
 import styles               from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar              from 'components/Toolbar/Toolbar.react';
 import SecurityDialog       from 'dashboard/Data/Browser/SecurityDialog.react';
-import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react'
+import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
 import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.react';
+import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
+import Toggle               from 'components/Toggle/Toggle.react';
 
 let BrowserToolbar = ({
   className,
@@ -57,6 +59,12 @@ let BrowserToolbar = ({
 
   enableColumnManipulation,
   enableClassManipulation,
+
+  currentUser,
+  useMasterKey,
+  login,
+  logout,
+  toggleMasterKeyUsage,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -84,7 +92,7 @@ let BrowserToolbar = ({
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' setCurrent={setCurrent}>
         <MenuItem
           text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
@@ -103,7 +111,7 @@ let BrowserToolbar = ({
     );
   } else if (onAddRow) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique} setCurrent={setCurrent}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
@@ -177,9 +185,11 @@ let BrowserToolbar = ({
 
   let clpDialogRef = useRef(null);
   let protectedDialogRef = useRef(null);
+  let loginDialogRef = useRef(null);
 
   const showCLP = ()=> clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
+  const showLogin = () => loginDialogRef.current.handleOpen();
 
   return (
     <Toolbar
@@ -202,6 +212,27 @@ let BrowserToolbar = ({
         order={order}
       />
       <div className={styles.toolbarSeparator} />
+      {onAddRow && (
+        <LoginDialog
+          ref={loginDialogRef}
+          currentUser={currentUser}
+          login={login}
+          logout={logout}
+        />
+      )}
+      {onAddRow && (
+        <BrowserMenu
+            setCurrent={setCurrent}
+            title={currentUser ? 'Browsing' : 'Browse'}
+            icon="users-solid"
+            active={!!currentUser}
+          >
+            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
+            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+        </BrowserMenu>
+      )}
+      {onAddRow && <div className={styles.toolbarSeparator} />}
       <a className={styles.toolbarButton} onClick={onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>

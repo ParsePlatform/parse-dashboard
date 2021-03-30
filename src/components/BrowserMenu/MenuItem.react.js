@@ -8,10 +8,16 @@
 import React  from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-let MenuItem = ({ text, disabled, onClick }) => {
+let MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
   let classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
+  }
+  if (active) {
+    classes.push(styles.active);
+  }
+  if (greenActive) {
+    classes.push(styles.greenActive);
   }
   return <div className={classes.join(' ')} onClick={disabled ? undefined : onClick}>{text}</div>;
 };

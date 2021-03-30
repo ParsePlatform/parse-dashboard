@@ -80,6 +80,10 @@ export default class Toggle extends React.Component {
         left = this.props.value === this.props.optionLeft;
         colored = this.props.colored;
         break;
+      case Toggle.Types.HIDE_LABELS:
+        colored = true;
+        left = !this.props.value;
+        break;
       default:
         labelLeft = 'No';
         labelRight = 'Yes';
@@ -90,7 +94,10 @@ export default class Toggle extends React.Component {
 
     let switchClasses = [styles.switch];
     if (colored) {
-      switchClasses.push(styles.colored)
+      switchClasses.push(styles.colored);
+    }
+    if (this.props.switchNoMargin) {
+      switchClasses.push(styles.switchNoMargin);
     }
     let toggleClasses = [styles.toggle, unselectable, input];
     if (left) {
@@ -101,9 +108,9 @@ export default class Toggle extends React.Component {
     }
     return (
       <div className={toggleClasses.join(' ')} style={this.props.additionalStyles || {}}>
-        <span className={styles.label} onClick={this.toLeft.bind(this)}>{labelLeft}</span>
+        {labelLeft && <span className={styles.label} onClick={this.toLeft.bind(this)}>{labelLeft}</span>}
         <span className={switchClasses.join(' ')} onClick={this.toggle.bind(this)}></span>
-        <span className={styles.label} onClick={this.toRight.bind(this)}>{labelRight}</span>
+        {labelRight && <span className={styles.label} onClick={this.toRight.bind(this)}>{labelRight}</span>}
       </div>
     );
   }

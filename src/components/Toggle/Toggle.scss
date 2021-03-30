@@ -60,6 +60,10 @@
   transition: background-position 0.15s ease-out;
 }
 
+.switchNoMargin {
+  margin: 0;
+}
+
 .left {
   .label {
     &:first-of-type {

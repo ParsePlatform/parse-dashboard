@@ -98,6 +98,7 @@ export default class ObjectPickerDialog extends React.Component {
   }
 
   async fetchParseData(source, filters) {
+    const { useMasterKey } = this.props;
     const query = queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -110,7 +111,7 @@ export default class ObjectPickerDialog extends React.Component {
 
     query.limit(MAX_ROWS_FETCHED);
 
-    let promise = query.find({ useMasterKey: true });
+    let promise = query.find({ useMasterKey: useMasterKey });
 
     const data = await promise;
     return data;
@@ -118,7 +119,8 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchParseDataCount(source, filters) {
     const query = queryFromFilters(source, filters);
-    const count = await query.count({ useMasterKey: true });
+    const { useMasterKey } = this.props;
+    const count = await query.count({ useMasterKey: useMasterKey });
     return count;
   }
 
@@ -172,7 +174,8 @@ export default class ObjectPickerDialog extends React.Component {
     }
     query.limit(MAX_ROWS_FETCHED);
 
-    query.find({ useMasterKey: true }).then(nextPage => {
+    const { useMasterKey } = this.props;
+    query.find({ useMasterKey: useMasterKey }).then(nextPage => {
       if (className === this.props.className) {
         this.setState(state => ({
           data: state.data.concat(nextPage)

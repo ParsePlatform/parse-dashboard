@@ -28,10 +28,14 @@ export default class BrowserMenu extends React.Component {
     let menu = null;
     if (this.state.open) {
       let position = Position.inDocument(this.node);
+      let titleStyle = [styles.title];
+      if (this.props.active) {
+        titleStyle.push(styles.active);
+      }
       menu = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div className={styles.menu}>
-            <div className={styles.title} onClick={() => this.setState({ open: false })}>
+            <div className={titleStyle.join(' ')} onClick={() => this.setState({ open: false })}>
               <Icon name={this.props.icon} width={14} height={14} />
               <span>{this.props.title}</span>
             </div>
@@ -48,6 +52,9 @@ export default class BrowserMenu extends React.Component {
       );
     }
     const classes = [styles.entry];
+    if (this.props.active) {
+      classes.push(styles.active);
+    }
     if (this.props.disabled) {
       classes.push(styles.disabled);
     }
@@ -55,6 +62,7 @@ export default class BrowserMenu extends React.Component {
     if (!this.props.disabled) {
       onClick = () => {
         this.setState({ open: true });
+        this.props.setCurrent(null);
       };
     }
     return (
