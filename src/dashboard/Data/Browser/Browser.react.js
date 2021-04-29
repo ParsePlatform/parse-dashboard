@@ -20,6 +20,7 @@ import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRow
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import EditRowDialog                      from 'dashboard/Data/Browser/EditRowDialog.react';
+import ExportSelectedRowsDialog           from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -59,6 +60,7 @@ class Browser extends DashboardView {
       showAttachRowsDialog: false,
       showEditRowDialog: false,
       rowsToDelete: null,
+      rowsToExport: null,
 
       relation: null,
       counts: {},
@@ -100,6 +102,9 @@ class Browser extends DashboardView {
     this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
     this.confirmCloneSelectedRows = this.confirmCloneSelectedRows.bind(this);
     this.cancelCloneSelectedRows = this.cancelCloneSelectedRows.bind(this);
+    this.showExportSelectedRowsDialog = this.showExportSelectedRowsDialog.bind(this);
+    this.confirmExportSelectedRows = this.confirmExportSelectedRows.bind(this);
+    this.cancelExportSelectedRows = this.cancelExportSelectedRows.bind(this);
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -721,7 +726,8 @@ class Browser extends DashboardView {
       this.state.showAttachSelectedRowsDialog ||
       this.state.showCloneSelectedRowsDialog ||
       this.state.showEditRowDialog ||
-      this.state.showPermissionsDialog
+      this.state.showPermissionsDialog ||
+      this.state.showExportSelectedRowsDialog
     );
   }
 
@@ -835,6 +841,74 @@ class Browser extends DashboardView {
       });
       this.showNote(error.message, true);
     }    
+  }
+
+  showExportSelectedRowsDialog(rows) {
+    this.setState({
+      rowsToExport: rows
+    });
+  }
+
+  cancelExportSelectedRows() {
+    this.setState({
+      rowsToExport: null
+    });
+  }
+
+  async confirmExportSelectedRows(rows) {
+    this.setState({ rowsToExport: null });
+    const className = this.props.params.className;
+    const query = new Parse.Query(className);
+
+    if (rows['*']) {
+      // Export all
+      query.limit(10000);
+    } else {
+      // Export selected
+      const objectIds = [];
+      for (const objectId in this.state.rowsToExport) {
+        objectIds.push(objectId);
+      }
+      query.containedIn('objectId', objectIds);
+    }
+
+    const classColumns = this.getClassColumns(className, false);
+    // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
+    const columnsObject = {};
+    classColumns.forEach((column) => {
+      columnsObject[column.name] = column;
+    });
+    // get ordered list of class columns
+    const columns = ColumnPreferences.getOrder(
+      columnsObject,
+      this.context.currentApp.applicationId,
+      className
+    ).filter(column => column.visible);
+
+    const objects = await query.find({ useMasterKey: true });
+    let csvString = columns.map(column => column.name).join(',') + '\n';
+    for (const object of objects) {
+      const row = columns.map(column => {
+        const type = columnsObject[column.name].type;
+        if (column.name === 'objectId') {
+          return object.id;
+        } else if (type === 'Relation' || type === 'Pointer') {
+          return object.get(column.name).id;
+        } else {
+          return `"${object.get(column.name)}"`;
+        }
+      }).join(',');
+      csvString += row + '\n';
+    }
+
+    // Deliver to browser to download file
+    const element = document.createElement('a');
+    const file = new Blob([csvString], { type: 'text/csv' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${className}.csv`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+    document.body.removeChild(element);
   }
 
   getClassRelationColumns(className) {
@@ -1013,6 +1087,7 @@ class Browser extends DashboardView {
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
+            onExportSelectedRows={this.showExportSelectedRowsDialog}
 
             columns={columns}
             className={className}
@@ -1183,6 +1258,15 @@ class Browser extends DashboardView {
           schema={this.props.schema}
         />
       )
+    } else if (this.state.rowsToExport) {
+      extras = (
+        <ExportSelectedRowsDialog
+          className={SpecialClasses[className] || className}
+          selection={this.state.rowsToExport}
+          onCancel={this.cancelExportSelectedRows}
+          onConfirm={() => this.confirmExportSelectedRows(this.state.rowsToExport)}
+        />
+      );
     }
 
     let notification = null;

@@ -37,6 +37,7 @@ let BrowserToolbar = ({
   onAttachRows,
   onAttachSelectedRows,
   onCloneSelectedRows,
+  onExportSelectedRows,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -125,6 +126,16 @@ let BrowserToolbar = ({
           disabled={!selectionLength}
           text={`Clone ${selectionLength <= 1 ? 'this row' : 'these rows'}`}
           onClick={onCloneSelectedRows}
+        />
+        <Separator />
+        <MenuItem
+          disabled={!selectionLength}
+          text={`Export ${selectionLength <= 1 ? 'this row' : 'these rows'} to CSV`}
+          onClick={() => onExportSelectedRows(selection)}
+        />
+        <MenuItem
+          text={'Export all rows to CSV'}
+          onClick={() => onExportSelectedRows({ '*': true })}
         />
         <Separator />
         <MenuItem
