@@ -47,7 +47,7 @@
     "csurf": "1.11.0",
     "express": "4.17.1",
     "graphql": "14.6.0",
-    "graphql-playground-react": "1.7.20",
+    "graphql-playground-react": "1.7.23",
     "history": "4.10.1",
     "immutable": "4.0.0-rc.9",
     "immutable-devtools": "0.1.5",
