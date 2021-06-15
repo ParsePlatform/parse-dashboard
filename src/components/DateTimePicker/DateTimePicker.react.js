@@ -17,14 +17,30 @@ export default class DateTimePicker extends React.Component {
     super();
     let timeRef = props.value || hoursFrom(new Date(), 1);
     this.state = {
+      showPasteBtn: false,
+      copyableDate: null,
+      defaultValue: null,
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
       minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
     }
   }
 
+  async componentDidMount(){
+    const status = await navigator.permissions.query({name:'clipboard-read'});
+    if ( status.state === 'granted' ) {
+      const text = await navigator.clipboard.readText();
+      const date = Date.parse(text);
+      if ( !isNaN(date) ) {
+        this.setState({ showPasteBtn: true, copyableDate: date, defaultValue: this.props.value });
+      }
+    }
+
+  }
+
   componentWillReceiveProps(props) {
     let timeRef = props.value || hoursFrom(new Date(), 1);
     this.setState({
+      defaultValue: props.value,
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
       minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
     });
@@ -67,7 +83,7 @@ export default class DateTimePicker extends React.Component {
   }
 
   commitTime() {
-    let dateRef = this.props.value || new Date();
+    let dateRef = this.state.defaultValue || new Date();
     let newDate = this.props.local ? new Date(
       dateRef.getFullYear(),
       dateRef.getMonth(),
@@ -91,8 +107,8 @@ export default class DateTimePicker extends React.Component {
   render() {
     return (
       <div style={{ width: this.props.width }} className={styles.picker} onClick={(e) => e.stopPropagation()} >
-        <Calendar local={this.props.local} value={this.props.value} onChange={(newValue) => {
-          let timeRef = this.props.value || hoursFrom(new Date(), 1);
+        <Calendar local={this.props.local} value={this.state.defaultValue || this.props.value} onChange={(newValue) => {
+          let timeRef = this.state.defaultValue || hoursFrom(new Date(), 1);
           let newDate = this.props.local ? new Date(
             newValue.getFullYear(),
             newValue.getMonth(),
@@ -116,6 +132,16 @@ export default class DateTimePicker extends React.Component {
             <input type='text' value={this.state.minutes} onChange={this.changeMinutes.bind(this)} />
           </div>
           <Button value='Set time' onClick={this.commitTime.bind(this)} primary={true} />
+          {
+            this.state.showPasteBtn === true &&
+              <div>
+                <div style={{ height: '5px' }}></div>
+              <Button width="100%" borderRadius="0px" value='Paste from clipboard'
+              onClick={() => {
+                this.setState({ defaultValue: new Date(this.state.copyableDate) });
+                this.props.onChange(new Date(this.state.copyableDate));
+              }} primary={true} />
+              </div>}
         </div>
       </div>
     );
