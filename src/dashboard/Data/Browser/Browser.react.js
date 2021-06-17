@@ -353,7 +353,7 @@ class Browser extends DashboardView {
           }
           this.state.counts[obj.className] += 1;
         }
-        
+
         this.setState(state);
       },
       error => {
@@ -516,7 +516,7 @@ class Browser extends DashboardView {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      
+
       if (sortDir === '-') {
         query.lessThan(field, comp);
         equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
@@ -649,7 +649,7 @@ class Browser extends DashboardView {
       this.setState(state);
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
-      if (msg) {
+      if (msg && error.code !== 142) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
 
