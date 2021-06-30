@@ -23,9 +23,10 @@ export default class BrowserCell extends Component {
     this.cellRef = React.createRef();
     this.copyableValue = undefined;
     this.state = {
-      showTooltip: false
-    }
-
+      showTooltip: false,
+      content: null,
+      classes: []
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -57,7 +58,7 @@ export default class BrowserCell extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.showTooltip !== this.state.showTooltip) {
+    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content ) {
       return true;
     }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
@@ -211,10 +212,8 @@ export default class BrowserCell extends Component {
     })));
   }
 
-  //#endregion
-
-  render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly } = this.props;
+  async componentDidMount(){
+    let { type, value, hidden, setRelation, onPointerClick } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -235,18 +234,38 @@ export default class BrowserCell extends Component {
       content = <span>&nbsp;</span>;
       classes.push(styles.empty);
     } else if (type === 'Pointer') {
+      const defaultPointerKey = await localStorage.getItem(value.className) || 'objectId';
+
+      let dataValue = value.id;
+      if( defaultPointerKey !== 'objectId' ) {
+        dataValue = value.get(defaultPointerKey);
+        if ( dataValue && typeof dataValue === 'object' ){
+          if ( dataValue instanceof Date ) {
+            dataValue = dataValue.toLocaleString();
+          }
+          else {
+            dataValue = '[Invalid value]';
+          }
+        }
+        if ( !dataValue ) {
+          dataValue = '[Invalid value]';
+        }
+      }
+
       if (value && value.__type) {
         const object = new Parse.Object(value.className);
         object.id = value.objectId;
         value = object;
       }
+
       content = onPointerClick ? (
         <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
+          <Pill value={ dataValue } />
         </a>
       ) : (
-          value.id
-        );
+        dataValue
+      );
+
       this.copyableValue = value.id;
     } else if (type === 'Date') {
       if (typeof value === 'object' && value.__type) {
@@ -299,15 +318,19 @@ export default class BrowserCell extends Component {
       this.copyableValue = undefined;
     }
 
-    if (current) {
-      classes.push(styles.current);
-    }
-    
+    this.setState({ ...this.state, content, classes })
+  }
+
+  //#endregion
+
+  render() {
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow } = this.props;
+
     return readonly ? (
-      <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip} >
+      <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip}>
         <span
           ref={this.cellRef}
-          className={classes.join(' ')}
+          className={this.state.classes.join(' ')}
           style={{ width }}
           onClick={() => {
             onSelect({ row, col });
@@ -324,13 +347,13 @@ export default class BrowserCell extends Component {
             }
           }}
         >
-          {row < 0 ? '(auto)' : content}
+          {row < 0 ? '(auto)' : this.state.content}
         </span>
       </Tooltip>
     ) : (
       <span
         ref={this.cellRef}
-        className={classes.join(' ')}
+        className={this.state.classes.join(' ')}
         style={{ width }}
         onClick={() => {
           onSelect({ row, col });
@@ -350,13 +373,11 @@ export default class BrowserCell extends Component {
             if (['ACL', 'Boolean', 'File'].includes(type)) {
               e.preventDefault();
             }
-            onEditChange(true);
-          }
-        }}
+          }}}
         onContextMenu={this.onContextMenu.bind(this)}
-      >
-        {content}
-      </span>
+        >
+          {this.state.content}
+        </span>
     );
   }
 }

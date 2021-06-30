@@ -1,14 +1,57 @@
 {
-  "apps": [
-    {
-      "serverURL": "http://localhost:1338/parse",
-      "appId": "hello",
-      "masterKey": "world",
-      "appName": "",
-      "iconName": "",
-      "primaryBackgroundColor": "",
-      "secondaryBackgroundColor": ""
-    }
-  ],
-  "iconsFolder": "icons"
+  "apps": [{
+    "serverURL": "https://parseapi.back4app.com",
+    "appId": "IvWJni5qb3gqJWmOlwZtfCA67cw5bZDvGU539T9J",
+    "javascriptKey": "HZ8PgZPHAM9r2tNrsnsQL7DU4JakERIAPD3sVIQI",
+    "restKey": "HnIKdoowoqFxJHgK3azdsigxR4vw4RnQUzwdiqWs",
+    "clientKey": "3oFJ03aUAlCtMFPqYz8enTP89tvp7GIuwvQbQ2Oz",
+    "windowsKey": "BQDTuFI9Tw6Tlh7C3rvlbNiZ3r0JLv8yDj015b5e",
+    "webhookKey": "LnirDOXQo3PUnvHFrVJriukXtwhwxHcWROXTdm4k",
+    "apiKey": "cda6c643-056e-4006-8080-3322c125f05d",
+    "appName": "Sample Blog App",
+    "production": true,
+    "appNameForURL": "8d153178-ab63-47fc-a546-0743ba667043",
+    "feedbackEmail": "faisal@back4app.com",
+    "custom": {
+      "isGDPR": false,
+      "forceShowGDPRFields": false,
+      "showAdminPage": false,
+      "isOwner": true,
+      "isDatabasePublic": false
+    },
+    "supportedPushLocales": [],
+    "graphQLServerURL": "https://parseapi.back4app.com/graphql",
+    "masterKey": "0bdT7LmVrpSBbjWYmmOGPuhEPVFBpQk4jJnvdv2d"
+  }, {
+    "serverURL": "https://parseapi.back4app.com",
+    "appId": "dvTjcE3x2STnpZo1x3iUpccY82ptKS2s9grRYP4b",
+    "javascriptKey": "LFiEhZBtFi7LCSJshF2YTc0coBKnSfZ0cJucJOlv",
+    "restKey": "BWkv4t7tvQO4PJcQvh3DJg3v2pkb1kDJqnD11tXH",
+    "clientKey": "jkwrEAfTFDrhLaapdZLIw5mTutXQvfLjWVYqdRM1",
+    "windowsKey": "4WGzrXvmbS8SRBjka34tcqkxEs8hNumtRlnjHmbC",
+    "webhookKey": "n6pbMF39n0GR7h4yg5HoKHRxyiPsks0mk1KycCHW",
+    "apiKey": "81432ee4-5076-460c-95e0-dd2b579ab648",
+    "appName": "FirstApp",
+    "production": true,
+    "appNameForURL": "1baa601c-a967-443a-905b-d5e7df17515a",
+    "feedbackEmail": "faisal@back4app.com",
+    "custom": {
+      "isGDPR": false,
+      "forceShowGDPRFields": false,
+      "showAdminPage": false,
+      "isOwner": true,
+      "isDatabasePublic": false
+    },
+    "supportedPushLocales": [],
+    "graphQLServerURL": "https://parseapi.back4app.com/graphql",
+    "masterKey": "c05f1V3DmG04GPRD2nEbbeCQCXSEI9klRtAZ4jgh"
+  }],
+  "newFeaturesInLatestVersion": [],
+  "user": {
+    "email": "faisal@back4app.com",
+    "has_password": false,
+    "account_keys": [],
+    "name": "faisal@back4app.com",
+    "playDatabaseBrowserTutorial": true
+  }
 }

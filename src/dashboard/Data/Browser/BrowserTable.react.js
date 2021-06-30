@@ -172,7 +172,6 @@ export default class BrowserTable extends React.Component {
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
         // since the "obj" instance will only be updated when the update request is done.
         const isEditingRow = this.props.current && this.props.current.row === i && !!this.props.editing;
-
         rows[index] = <BrowserRow
           key={index}
           isEditing={isEditingRow}

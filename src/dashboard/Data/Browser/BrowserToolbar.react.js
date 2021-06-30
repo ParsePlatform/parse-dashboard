@@ -57,6 +57,7 @@ let BrowserToolbar = ({
 
   enableColumnManipulation,
   enableClassManipulation,
+  onShowPointerKey
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -109,6 +110,7 @@ let BrowserToolbar = ({
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
         {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
         <Separator />
+        <MenuItem text='Change pointer key' onClick={onShowPointerKey} />
         <MenuItem
           disabled={selectionLength !== 1}
           text={'Edit this row with modal'}

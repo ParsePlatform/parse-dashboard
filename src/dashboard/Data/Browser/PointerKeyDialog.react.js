@@ -14,12 +14,17 @@ import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 
-export default class RemoveColumnDialog extends React.Component {
+export default class PointerKeyDialog extends React.Component {
   constructor() {
     super();
     this.state = {
       name: null
     };
+  }
+
+  async componentDidMount() {
+    const defaultPointerKey = await localStorage.getItem(this.props.className);
+    this.setState({ name: defaultPointerKey });
   }
 
   render() {
@@ -30,7 +35,7 @@ export default class RemoveColumnDialog extends React.Component {
         <Field
           label={
             <Label
-              text='Which column?' />
+              text='PointerKey' />
             }
           input={
             <Dropdown
@@ -44,11 +49,10 @@ export default class RemoveColumnDialog extends React.Component {
     }
     return (
       <Modal
-        type={Modal.Types.DANGER}
-        icon='warn-outline'
-        title='Remove a column'
-        subtitle={hasColumns ? 'Be careful, this action cannot be undone.' : 'There are no removable columns on this class.'}
-        confirmText='Remove column'
+        type={Modal.Types.INFO}
+        title={'Edit pointer key for this class'}
+        subtitle={hasColumns ? 'The column will be used inplace of pointer column value for class:'+this.props.className : 'There are no columns on this class that can be set a pointer value.'}
+        confirmText='Update pointer value'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         disabled={!this.state.name}
