@@ -39,6 +39,9 @@ let Modal = (({
   customFooter,
   textModal = false,
   width,
+  continueText,
+  onContinue,
+  showContinue,
   buttonsInCenter = React.Children.count(children) === 0,
 }) => {
   if (children) {
@@ -63,6 +66,15 @@ let Modal = (({
         disabled={!!disabled}
         onClick={onConfirm}
         progress={progress} />
+      {
+      showContinue === true ?
+      <Button
+        primary={true}
+        value={continueText}
+        color={buttonColors[type]}
+        disabled={!!disabled}
+        onClick={onContinue}
+        progress={progress} />: null}
     </div>
   );
 

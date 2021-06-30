@@ -206,6 +206,9 @@ export default class AddColumnDialog extends React.Component {
         confirmText='Add column'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
+        continueText={'Create column & add another'}
+        showContinue={true}
+        onContinue={() => this.props.onContinue(this.state)}
         onConfirm={() => {
           this.props.onConfirm(this.state);
         }}>

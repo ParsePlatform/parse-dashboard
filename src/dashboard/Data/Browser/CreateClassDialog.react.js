@@ -13,6 +13,7 @@ import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 import { SpecialClasses } from 'lib/Constants';
 import TextInput          from 'components/TextInput/TextInput.react';
+import history                           from 'dashboard/history';
 
 function validClassName(name) {
   return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
@@ -68,7 +69,16 @@ export default class CreateClassDialog extends React.Component {
         disabled={!this.valid()}
         confirmText='Create class'
         cancelText={'Cancel'}
+        continueText={'Create class & add columns'}
         onCancel={this.props.onCancel}
+        showContinue={true}
+        onContinue={async () => {
+          let type = this.state.type;
+          let className = type === 'Custom' ? this.state.name : '_' + type;
+          await this.props.onConfirm(className);
+          history.push(`/apps/${this.props.currentAppSlug}/browser/${className}`);
+          this.props.onAddColumn();
+        }}
         onConfirm={() => {
           let type = this.state.type;
           let className = type === 'Custom' ? this.state.name : '_' + type;
