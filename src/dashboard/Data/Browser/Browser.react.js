@@ -257,9 +257,9 @@ class Browser extends DashboardView {
       history.push(this.context.generatePath('browser'));
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
-      if (msg) {
-        msg = msg[0].toUpperCase() + msg.substr(1);
-      }
+      // if (msg) {
+      //   msg = msg[0].toUpperCase() + msg.substr(1);
+      // }
 
       this.showNote(msg, true);
     });
@@ -338,9 +338,9 @@ class Browser extends DashboardView {
             },
             error => {
               let msg = typeof error === "string" ? error : error.message;
-              if (msg) {
-                msg = msg[0].toUpperCase() + msg.substr(1);
-              }
+              // if (msg) {
+              //   msg = msg[0].toUpperCase() + msg.substr(1);
+              // }
               obj.set(attr, prev);
               this.setState({ data: this.state.data });
               this.showNote(msg, true);
@@ -353,14 +353,14 @@ class Browser extends DashboardView {
           }
           this.state.counts[obj.className] += 1;
         }
-        
+
         this.setState(state);
       },
       error => {
         let msg = typeof error === "string" ? error : error.message;
-        if (msg) {
-          msg = msg[0].toUpperCase() + msg.substr(1);
-        }
+        // if (msg) {
+        //   msg = msg[0].toUpperCase() + msg.substr(1);
+        // }
         this.showNote(msg, true);
       }
     );
@@ -516,7 +516,7 @@ class Browser extends DashboardView {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      
+
       if (sortDir === '-') {
         query.lessThan(field, comp);
         equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
@@ -649,9 +649,9 @@ class Browser extends DashboardView {
       this.setState(state);
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
-      if (msg) {
-        msg = msg[0].toUpperCase() + msg.substr(1);
-      }
+      // if (msg) {
+      //   msg = msg[0].toUpperCase() + msg.substr(1);
+      // }
 
       this.showNote(msg, true);
     });
