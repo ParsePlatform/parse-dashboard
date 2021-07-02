@@ -36,7 +36,7 @@ let Button = (props) => {
   let clickHandler = hasOnClick ? props.onClick : noop;
   let styleOverride = null;
   if (props.width) {
-    styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };
+    styleOverride = { borderRadius: props.borderRadius, width: props.width, minWidth: props.width, ...props.additionalStyles };
   }
   return (
     <a
