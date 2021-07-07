@@ -9,8 +9,9 @@
 
 .pill {
   @include MonospaceFont;
-  display: inline-block;
-  background: #D5E5F2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: #0E69A1;
   height: 20px;
   line-height: 20px;
@@ -18,10 +19,41 @@
   font-size: 11px;
   padding: 0 8px;
   width: 100%;
-  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  & a {
+    height: 20px;
+    width: 20px;
+    background: #d6e5f2;
+    border-radius: 50%;
+    & svg  {
+      transform: rotate(316deg);
+    }
+  }
+}
 
+.content {
+  width: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.iconAction {
+  cursor: pointer;
+}
+
+.disableIconAction {
+  cursor: initial;
+}
+
+.action {
+  background: #D5E5F2;
+  justify-content: center;
   &:hover {
     background: #BFD4E5;
   }

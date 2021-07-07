@@ -241,12 +241,14 @@ export default class BrowserCell extends Component {
         value = object;
       }
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
-        </a>
+        <Pill
+          value={value.id}
+          onClick={onPointerClick.bind(undefined, value)}
+          followClick={true}
+        />
       ) : (
-          value.id
-        );
+        value.id
+      );
       this.copyableValue = value.id;
     } else if (type === 'Date') {
       if (typeof value === 'object' && value.__type) {
@@ -261,7 +263,7 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = JSON.stringify(value);
     } else if (type === 'File') {
       const fileName = value.url() ? getFileName(value) : 'Uploading\u2026';
-      content = <Pill value={fileName} />;
+      content = <Pill value={fileName} fileDownloadLink={value.url()} />;
       this.copyableValue = fileName;
     } else if (type === 'ACL') {
       let pieces = [];
@@ -290,8 +292,8 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
     } else if (type === 'Relation') {
       content = setRelation ? (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }}>
-          <Pill onClick={() => setRelation(value)} value='View relation' />
+        <div style={{ textAlign: 'center' }}>
+          <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
           'Relation'
