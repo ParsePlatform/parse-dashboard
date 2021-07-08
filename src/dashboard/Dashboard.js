@@ -57,6 +57,7 @@ import { Route, Redirect } from 'react-router-dom';
 import createClass from 'create-react-class';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
+import { authenticator } from 'otplib';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 

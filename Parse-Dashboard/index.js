@@ -11,6 +11,7 @@ const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
 const parseDashboard = require('./app');
+const authenticator = require('otplib').authenticator;
 
 const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
@@ -26,6 +27,7 @@ program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard
 program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
 program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
 program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
+program.option('--generateMFA [username]', 'helper tool to allow you to generate secure MFA secrets.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
 
@@ -56,6 +58,14 @@ let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+
+if (program.generateMFA) {
+  // I can't seem to get this working.
+  const secret = authenticator.generateSecret();
+  const otpauth = authenticator.keyuri(program.generateMFA, configAppName, secret);
+  console.log(`MFA secret for ${program.generateMFA} is ${secret}\nDo not share this code. Set it as mfa for this user in parse-dashboard-config.json`);
+  console.log(`OTPAUTH URL for ${program.generateMFA} is ${otpauth}\nShare this with ${program.generateMFA}`);
+}
 
 function handleSIGs(server) {
   const signals = {

@@ -3,6 +3,7 @@ var bcrypt = require('bcryptjs');
 var csrf = require('csurf');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+const authenticator = require('otplib').authenticator;
 
 /**
  * Constructor for Authentication class
@@ -21,10 +22,12 @@ function initialize(app, options) {
   options = options || {};
   var self = this;
   passport.use('local', new LocalStrategy(
-    function(username, password, cb) {
+    {passReqToCallback:true},
+    function(req, username, password, cb) {
       var match = self.authenticate({
         name: username,
-        pass: password
+        pass: password,
+        otpCode: req.body.otpCode
       });
       if (!match.matchingUsername) {
         return cb(null, false, { message: 'Invalid username or password' });
@@ -90,16 +93,24 @@ function authenticate(userToTest, usernameOnly) {
     //the provided auth matches one of the users
     this.validUsers.find(user => {
       let isAuthenticated = false;
+      let otpValidated = true;
+      if (user.mfa && !usernameOnly) {
+        if (!userToTest.otpCode) {
+          otpValidated = false;
+        }
+        if (!authenticator.verify({ token:userToTest.otpCode, secret: user.mfa })) {
+          otpValidated = false;
+        }
+      }
       let usernameMatches = userToTest.name == user.user;
       let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
-      if (usernameMatches && (usernameOnly || passwordMatches)) {
+      if (usernameMatches && (usernameOnly || passwordMatches) && otpValidated) {
         isAuthenticated = true;
         matchingUsername = user.user;
         // User restricted apps
         appsUserHasAccessTo = user.apps || null;
         isReadOnly = !!user.readOnly; // make it true/false
       }
-
       return isAuthenticated;
     }) ? true : false;
 
