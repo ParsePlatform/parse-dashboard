@@ -24,15 +24,18 @@ export default class SidebarHeader extends React.Component {
     });
   }
   render() {
+    const customBrandIcon = window.CUSTOM_BRAND_ICON;
+    const customBrandTitle = window.CUSTOM_BRAND_TITLE;
     return (
       <div className={styles.header}>
         <Link className={styles.logo} to={{ pathname: '/apps' }}>
-          <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
+          {!customBrandIcon && <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />}
+          {customBrandIcon && <img src={'appicons/' + customBrandIcon} width={28} height={28} alt={customBrandTitle || 'Brand Logo'} />}
         </Link>
         <Link to='/apps'>
           <div className={styles.version}>
             <div>
-              Parse Dashboard {version}
+              {customBrandTitle || 'Parse Dashboard'} {version}
               <div>
                 {this.state.dashboardUser}
               </div>
