@@ -455,7 +455,7 @@ class Browser extends DashboardView {
   }
 
   excludeFields(query, className) {
-    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className);
+    let columns = ColumnPreferences.getPreferences(this.context.currentApp.applicationId, className);
     if (columns) {
       columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name);
       for (let columnsKey in columns) {
