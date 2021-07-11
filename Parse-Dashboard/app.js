@@ -62,7 +62,7 @@ module.exports = function(config, options) {
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
-    const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
+    const authInstance = config.authInstance || new Authentication(users, useEncryptedPasswords, mountPath);
     authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret });
 
     // CSRF error handler
