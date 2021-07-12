@@ -163,14 +163,19 @@ export const Constraints = {
     field: null,
     comparable: false
   },
+  dneOrNull: {
+    name: 'does not exists or null',
+    field: null,
+    comparable: false
+  }
 };
 
 export const FieldConstraints = {
-  'Pointer': [ 'exists', 'dne', 'eq', 'neq', 'unique' ],
-  'Boolean': [ 'exists', 'dne', 'eq', 'unique' ],
-  'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique' ],
-  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique' ],
-  'Date': [ 'exists', 'dne', 'before', 'after', 'unique' ],
+  'Pointer': [ 'exists', 'dne', 'eq', 'neq', 'unique', 'dneOrNull' ],
+  'Boolean': [ 'exists', 'dne', 'eq', 'unique', 'dneOrNull' ],
+  'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique', 'dneOrNull' ],
+  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique', 'dneOrNull' ],
+  'Date': [ 'exists', 'dne', 'before', 'after', 'unique', 'dneOrNull' ],
   'Object': [
     'exists',
     'dne',
@@ -183,6 +188,7 @@ export const FieldConstraints = {
     'keyLt',
     'keyLte',
     'unique',
+    'dneOrNull'
   ],
   'Array': [
     'exists',
@@ -193,6 +199,7 @@ export const FieldConstraints = {
     'doesNotContainNumber',
     'containsAny',
     'doesNotContainAny',
+    'dneOrNull'
   ]
 };
 
