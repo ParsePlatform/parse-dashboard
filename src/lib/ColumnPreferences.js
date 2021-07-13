@@ -87,20 +87,24 @@ export function getOrder(cols, appId, className, defaultPrefs) {
   for (let name in cols) {
     requested[name] = true;
     if (!seen[name]) {
-      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs });
+      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs, required: cols[name]['required'] });
       seen[name] = true;
       updated = true;
     }
   }
   let filtered = [];
   for (let i = 0; i < order.length; i++) {
-    const { name, visible } = order[i];
+    const { name, visible, required } = order[i];
 
     // If "visible" attribute is not defined, sets to true
     // and updates the cached preferences.
     if (typeof visible === 'undefined') {
       order[i].visible = true;
       updated = true;
+    }
+    // If "required" attribute is not defined, set it to false
+    if (typeof required === 'undefined') {
+      order[i].required = false;
     }
     if (requested[name]) {
       filtered.push(order[i]);

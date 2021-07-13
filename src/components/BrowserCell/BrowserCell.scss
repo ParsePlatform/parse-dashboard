@@ -35,3 +35,18 @@
     bottom: 0;
   }
 }
+
+.required {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border: 2px solid #ff395e;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}

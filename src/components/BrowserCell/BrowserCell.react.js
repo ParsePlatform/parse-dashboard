@@ -214,12 +214,13 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredField } = this.props;
     let content = value;
+    let isNewRow = row < 0;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
-      content = '(hidden)';
+      content = value !== undefined || !isNewRow ? '(hidden)' : isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);
     } else if (value === undefined) {
       if (type === 'ACL') {
@@ -228,6 +229,7 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = '(undefined)';
         classes.push(styles.empty);
       }
+      content = isNewRow && isRequired && value === undefined ? '(required)' : content;
     } else if (value === null) {
       this.copyableValue = content = '(null)';
       classes.push(styles.empty);
@@ -303,6 +305,10 @@ export default class BrowserCell extends Component {
       classes.push(styles.current);
     }
     
+    if (markRequiredField && isRequired && !value) {
+      classes.push(styles.required);
+    }
+    
     return readonly ? (
       <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip} >
         <span
@@ -324,7 +330,7 @@ export default class BrowserCell extends Component {
             }
           }}
         >
-          {row < 0 ? '(auto)' : content}
+          {isNewRow ? '(auto)' : content}
         </span>
       </Tooltip>
     ) : (
