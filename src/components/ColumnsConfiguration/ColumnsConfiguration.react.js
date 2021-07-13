@@ -48,13 +48,19 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   render() {
-    const { handleColumnDragDrop, handleColumnsOrder, order } = this.props;
-    const [ title, entry ] = [styles.title, styles.entry ].map(className => (
+    const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
+    let [ title, entry ] = [styles.title, styles.entry ].map(className => (
       <div className={className} onClick={this.toggle.bind(this)}>
         <Icon name='manage-columns' width={14} height={14} />
         <span>Manage Columns</span>
       </div>
     ));
+    if (disabled) {
+      entry = <div className={styles.entry + ' ' + styles.disabled} onClick={null}>
+        <Icon name='manage-columns' width={14} height={14} />
+        <span>Manage Columns</span>
+      </div>;
+    }
 
     let popover = null;
     if (this.state.open) {

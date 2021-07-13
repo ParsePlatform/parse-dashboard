@@ -22,6 +22,15 @@
   &:hover svg {
     fill: white;
   }
+  
+  &.disabled {
+    cursor: not-allowed;
+    color: #66637A;
+
+    &:hover svg {
+      fill: #66637A;
+    }
+  }
 }
 
 .entry.active {

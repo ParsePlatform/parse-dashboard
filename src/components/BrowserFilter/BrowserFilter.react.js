@@ -144,6 +144,9 @@ export default class BrowserFilter extends React.Component {
     if (this.props.filters.size) {
       buttonStyle.push(styles.active);
     }
+    if (this.props.disabled) {
+      buttonStyle.push(styles.disabled);
+    }
     return (
       <div className={styles.wrap}>
         <div className={buttonStyle.join(' ')} onClick={this.toggle}>

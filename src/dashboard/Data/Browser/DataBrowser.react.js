@@ -269,7 +269,7 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog,  ...other } = this.props;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
@@ -279,6 +279,7 @@ export default class DataBrowser extends React.Component {
           editing={this.state.editing}
           simplifiedSchema={this.state.simplifiedSchema}
           className={className}
+          editCloneRows={editCloneRows}
           handleHeaderDragDrop={this.handleHeaderDragDrop}
           handleResize={this.handleResize}
           setEditing={this.setEditing}
@@ -300,6 +301,8 @@ export default class DataBrowser extends React.Component {
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
           handleColumnsOrder={this.handleColumnsOrder}
+          editCloneRows={editCloneRows}
+          onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
           {...other} />
 
