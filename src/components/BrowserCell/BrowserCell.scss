@@ -35,3 +35,20 @@
     bottom: 0;
   }
 }
+
+.hasMore{
+  height: auto;
+  max-height: 25px;
+  overflow-y: scroll;
+}
+
+.hasMore::-webkit-scrollbar {
+  -webkit-appearance: none!important;
+  width: 7px!important;
+}
+
+.hasMore::-webkit-scrollbar-thumb {
+  border-radius: 4px!important;
+  background-color: rgba(0, 0, 0, .5)!important;
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5)!important;
+}
